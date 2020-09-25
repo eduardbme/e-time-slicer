@@ -1,0 +1,19 @@
+before_install:
+   - wget https://s3.amazonaws.com/rebar3/rebar3
+   - chmod u+x ./rebar3
+install: "true"
+language: erlang
+sudo: false
+otp_release:
+  - 23.0
+  - 22.0
+  - 21.0
+  - 20.0
+  - 19.0
+script:
+  - DEBUG=1 REBAR=./rebar3 make deps
+  - DEBUG=1 REBAR=./rebar3 make test
+after_success:
+ - DEBUG=1 ./rebar3 as test coveralls send
+notifications:
+  webhooks: https://coveralls.io/webhook

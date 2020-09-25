@@ -1,0 +1,8 @@
+{"1.1.0",
+[{<<"coveralls">>,{pkg,<<"coveralls">>,<<"2.2.0">>},0},
+ {<<"jsx">>,{pkg,<<"jsx">>,<<"2.10.0">>},1}]}.
+[
+{pkg_hash,[
+ {<<"coveralls">>, <<"7B91A34A8F0AE2333D899D4277DE350DB9CCE264062C6F34F431A8CBFB06D5A7">>},
+ {<<"jsx">>, <<"77760560D6AC2B8C51FD4C980E9E19B784016AA70BE354CE746472C33BEB0B1C">>}]}
+].

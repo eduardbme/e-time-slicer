@@ -1,0 +1,14 @@
+{
+  application,
+  e_time_slicer,
+  [
+    {description, "Sort JSON in Erlang"},
+    {vsn, "1.0.0"},
+    {id, "git"},
+    {modules, []},
+    {registered, []},
+    {applications, []},
+    {mod, {e_time_slicer_app, []}},
+    {env, []}
+  ]
+}.
