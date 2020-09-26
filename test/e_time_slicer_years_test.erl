@@ -1,4 +1,4 @@
--module(e_time_slicer_test).
+-module(e_time_slicer_years_test).
 -compile(export_all).
 
 -include_lib("eunit/include/eunit.hrl").
@@ -18,7 +18,7 @@ test({input, Input, expected_result, ExpectedResult}) ->
 all_tests_test_() ->
   TestCases = [
     {
-      %% Test with leap year
+      %% Test with a leap year
       %% 1577836800 // 01 Jan 2020 00:00:00 GMT
       %% 1609459200 // 01 Jan 2021 00:00:00 GMT
       input, [1577836800, 1609459200, [{scale, years}]],
@@ -34,7 +34,7 @@ all_tests_test_() ->
       ]
     },
     {
-      %% Test with leap year
+      %% Test with a leap year
       %% 1451606400 // 01 Jan 2016 00:00:00 GMT
       %% 1514764800 // 01 Jan 2018 00:00:00 GMT
       input, [1451606400, 1514764800, [{scale, years}]],
@@ -51,7 +51,7 @@ all_tests_test_() ->
       ]
     },
     {
-      %% Test with leap years
+      %% Test with a leap years
       %% 1262304000 // 01 Jan 2010 00:00:00 GMT
       %% 1577836800 // 01 Jan 2020 00:00:00 GMT
       input, [1262304000, 1577836800, [{scale, years}]],
@@ -69,15 +69,15 @@ all_tests_test_() ->
       %% 1577836800 // 01 Jan 2020 00:00:00 GMT
       input, [1546300800, 1577836800, [{scale, years}]],
       expected_result, [
-      {type, years},
-      {count, 1},
-      {from, 1546300800},
-      {to, 1577836800},
-      {remainder, 0},
-      {slices, [
-        [{from, 1546300800}, {to, 1577836800}]
-      ]}
-    ]
+        {type, years},
+        {count, 1},
+        {from, 1546300800},
+        {to, 1577836800},
+        {remainder, 0},
+        {slices, [
+          [{from, 1546300800}, {to, 1577836800}]
+        ]}
+      ]
     },
     {
       %% 1546300800 // 01 Jan 2019 00:00:00 GMT
@@ -154,47 +154,7 @@ all_tests_test_() ->
           [{from, 1483228800 + 31536000}, {to, 1546300800}]
         ]}
       ]
-    },
-    {
-      %% %% Test with leap year
-      %% 1577836800 - 01 Jan 2020 00:00:00 GMT
-      %% 1609891200 - 06 Jan 2021 00:00:00 GMT
-      input, [1577836800, 1609891200, [{scale, weeks}]],
-      expected_result, [
-      {type, weeks},
-      {count, 53},
-      {from, 1577836800},
-      {to, 1609459200},
-      {remainder, 0},
-      {slices, []}
-    ]
-    },
-    {
-      %% 1546300800 - 01 Jan 2019 00:00:00 GMT
-      %% 1577836800 - 01 Jan 2020 00:00:00 GMT
-      input, [1546300800, 1577836800, [{scale, weeks}]],
-      expected_result, [
-        {type, weeks},
-        {count, 52},
-        {from, 1546300800},
-        {to, 1577836800 - 86400},
-        {remainder, 86400},
-        {slices, []}
-      ]
     }
-%%    {
-%%      %% 1577836800 - 01 Jan 2020 00:00:00 GMT
-%%      %% 1609459200 - 01 Jan 2021 00:00:00 GMT
-%%      input, [1577836800, 1609459200, [{dynamic, true}, {max_scale, weeks}]],
-%%      expected_result, [
-%%        {weeks, 52},
-%%        {days, 2},
-%%        {slices, [
-%%          [{type, weeks}, {from, 1}, {to, 2}],
-%%          [{type, days}, {from, 1}, {to, 2}]
-%%        ]}
-%%      ]
-%%    }
   ],
 
   [

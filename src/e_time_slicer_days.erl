@@ -1,4 +1,4 @@
--module(e_time_slicer_weeks).
+-module(e_time_slicer_days).
 
 %% API
 -export([
@@ -6,14 +6,14 @@
 ]).
 
 slice(From0, To0) when From0 < To0 ->
-  AmountOfSecondsWithinWeek = 604800,
+  AmountOfSecondsWithinDay = 86400,
   Seconds = To0 - From0,
-  AmountOfWeeks = Seconds div AmountOfSecondsWithinWeek,
+  AmountOfDays = Seconds div AmountOfSecondsWithinDay,
 
-  Slices = e_time_slice:slice(From0, AmountOfWeeks, AmountOfSecondsWithinWeek),
+  Slices = e_time_slice:slice(From0, AmountOfDays, AmountOfSecondsWithinDay),
 
   {to, To} = if
-    AmountOfWeeks > 0 -> {to, From0 + AmountOfWeeks * AmountOfSecondsWithinWeek};
+    AmountOfDays > 0 -> {to, From0 + AmountOfDays * AmountOfSecondsWithinDay};
     true -> {to, undefined}
   end,
 
@@ -23,8 +23,8 @@ slice(From0, To0) when From0 < To0 ->
   end,
 
   {ok, [
-    {type, weeks},
-    {count, AmountOfWeeks},
+    {type, days},
+    {count, AmountOfDays},
     {from, From0},
     {to, To},
     {remainder, Remainder},

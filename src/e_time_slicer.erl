@@ -56,7 +56,9 @@ do_slice_with_acc(Scale, From0, To0, Acc0) ->
 do_slice(years, From, To) ->
   e_time_slicer_years:slice(From, To);
 do_slice(weeks, From, To) ->
-  e_time_slicer_weeks:slice(From, To).
+  e_time_slicer_weeks:slice(From, To);
+do_slice(days, From, To) ->
+  e_time_slicer_days:slice(From, To).
 
 next_scale(years) -> weeks;
 next_scale(weeks) -> days;
