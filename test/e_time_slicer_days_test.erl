@@ -20,7 +20,7 @@ all_tests_test_() ->
     {
       %% 1577836800 - 01 Jan 2020 00:00:00 GMT
       %% 1577836801 - 01 Jan 2020 00:00:01 GMT
-      input, [1577836800, 1577836801, [{scale, days}]],
+      input, [1577836800, 1577836801, [{scale, days}, {dynamic, false}]],
       expected_result, [
         {type, days},
         {count, 0},
@@ -33,7 +33,7 @@ all_tests_test_() ->
     {
       %% 1577836800 - 01 Jan 2020 00:00:00 GMT
       %% 1577836861 - 01 Jan 2020 00:01:01 GMT
-      input, [1577836800, 1577836861, [{scale, days}]],
+      input, [1577836800, 1577836861, [{scale, days}, {dynamic, false}]],
       expected_result, [
         {type, days},
         {count, 0},
@@ -46,7 +46,7 @@ all_tests_test_() ->
     {
       %% 1577836800 - 01 Jan 2020 00:00:00 GMT
       %% 1577840461 - 01 Jan 2020 01:01:01 GMT
-      input, [1577836800, 1577840461, [{scale, days}]],
+      input, [1577836800, 1577840461, [{scale, days}, {dynamic, false}]],
         expected_result, [
         {type, days},
         {count, 0},
@@ -59,7 +59,7 @@ all_tests_test_() ->
     {
       %% 1577836800 - 01 Jan 2020 00:00:00 GMT
       %% 1578268800 - 06 Jan 2020 00:00:00 GMT
-      input, [1577836800, 1578268800, [{scale, days}]],
+      input, [1577836800, 1578268800, [{scale, days}, {dynamic, false}]],
       expected_result, [
         {type, days},
         {count, 5},
@@ -78,7 +78,7 @@ all_tests_test_() ->
     {
       %% 1577836800 - 01 Jan 2020 00:00:00 GMT
       %% 1578268801 - 06 Jan 2020 00:00:01 GMT
-      input, [1577836800, 1578268801, [{scale, days}]],
+      input, [1577836800, 1578268801, [{scale, days}, {dynamic, false}]],
       expected_result, [
         {type, days},
         {count, 5},
@@ -97,7 +97,7 @@ all_tests_test_() ->
     {
       %% 1577836800 - 01 Jan 2020 00:00:00 GMT
       %% 1578268861 - 06 Jan 2020 00:01:01 GMT
-      input, [1577836800, 1578268861, [{scale, days}]],
+      input, [1577836800, 1578268861, [{scale, days}, {dynamic, false}]],
       expected_result, [
         {type, days},
         {count, 5},
@@ -116,7 +116,7 @@ all_tests_test_() ->
     {
       %% 1577836800 - 01 Jan 2020 00:00:00 GMT
       %% 1578272461 - 06 Jan 2020 01:01:01 GMT
-      input, [1577836800, 1578272461, [{scale, days}]],
+      input, [1577836800, 1578272461, [{scale, days}, {dynamic, false}]],
       expected_result, [
       {type, days},
       {count, 5},

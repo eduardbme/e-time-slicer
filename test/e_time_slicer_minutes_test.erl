@@ -20,7 +20,7 @@ all_tests_test_() ->
     {
       %% 1577836800 - 01 Jan 2020 00:00:00 GMT
       %% 1577836801 - 01 Jan 2020 00:00:01 GMT
-      input, [1577836800, 1577836801, [{scale, minutes}]],
+      input, [1577836800, 1577836801, [{scale, minutes}, {dynamic, false}]],
       expected_result, [
         {type, minutes},
         {count, 0},
@@ -33,7 +33,7 @@ all_tests_test_() ->
     {
       %% 1577836800 - 01 Jan 2020 00:00:00 GMT
       %% 1577836861 - 01 Jan 2020 00:01:01 GMT
-      input, [1577836800, 1577836861, [{scale, minutes}]],
+      input, [1577836800, 1577836861, [{scale, minutes}, {dynamic, false}]],
       expected_result, [
         {type, minutes},
         {count, 1},
@@ -48,7 +48,7 @@ all_tests_test_() ->
     {
       %% 1577836800 - 01 Jan 2020 00:00:00 GMT
       %% 1577840461 - 01 Jan 2020 01:01:01 GMT
-      input, [1577836800, 1577840461, [{scale, minutes}]],
+      input, [1577836800, 1577840461, [{scale, minutes}, {dynamic, false}]],
         expected_result, [
         {type, minutes},
         {count, 60 + 1},
@@ -123,7 +123,7 @@ all_tests_test_() ->
     {
       %% 1577836800 - 01 Jan 2020 00:00:00 GMT
       %% 1577923200 - 02 Jan 2020 00:00:00 GMT
-      input, [1577836800, 1577923200, [{scale, minutes}]],
+      input, [1577836800, 1577923200, [{scale, minutes}, {dynamic, false}]],
       expected_result, [
         {type, minutes},
         {count, 24 * 60},

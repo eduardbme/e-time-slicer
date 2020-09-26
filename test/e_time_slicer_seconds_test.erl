@@ -20,7 +20,7 @@ all_tests_test_() ->
     {
       %% 1577836800 - 01 Jan 2020 00:00:00 GMT
       %% 1577836801 - 01 Jan 2020 00:00:01 GMT
-      input, [1577836800, 1577836801, [{scale, seconds}]],
+      input, [1577836800, 1577836801, [{scale, seconds}, {dynamic, false}]],
       expected_result, [
         {type, seconds},
         {count, 1},
@@ -35,7 +35,7 @@ all_tests_test_() ->
     {
       %% 1577836800 - 01 Jan 2020 00:00:00 GMT
       %% 1577836861 - 01 Jan 2020 00:01:01 GMT
-      input, [1577836800, 1577836861, [{scale, seconds}]],
+      input, [1577836800, 1577836861, [{scale, seconds}, {dynamic, false}]],
       expected_result, [
         {type, seconds},
         {count, 60 + 1},
