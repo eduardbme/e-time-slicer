@@ -13,6 +13,7 @@ otp_release:
 script:
   - DEBUG=1 REBAR=./rebar3 make deps
   - DEBUG=1 REBAR=./rebar3 make test
+  - DEBUG=1 REBAR=./rebar3 make dialyze
 after_success:
  - DEBUG=1 ./rebar3 as test coveralls send
 notifications:

@@ -22,3 +22,4 @@ xrefr
 rebar3
 _build
 *.crashdump
+.dialyzer_plt

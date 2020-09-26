@@ -1,1 +1,82 @@
 # e-time-slicer
+
+# Description
+```erlang
+-spec slice(From, To, Options) -> {ok, Result} when
+  From :: non_neg_integer(),
+  To :: non_neg_integer(),
+  Options :: proplists:proplist(),
+  Result :: list().
+slice(From, To, Options) -> ...
+```
+
+### Options:
+- `max_scale :: weeks | days | hours | minutes | seconds`
+- `scale :: weeks | days | hours | minutes | seconds`
+- `dynamic :: true | false`
+# How to use:
+```erlang
+%% 1577836800 - 01 Jan 2020 00:00:00 GMT
+%% 1578531661 - 09 Jan 2020 01:01:01 GMT
+1> e_time_slicer:slice(1577836800, 1578531661, [{dynamic, true}, {max_scale, weeks}]).
+{ok,[{weeks,1},
+     {days,1},
+     {hours,1},
+     {minutes,1},
+     {seconds,1},
+     {slices,[[{type,weeks},{from,1577836800},{to,1578441600}],      %% 1578441600 - 08 Jan 2020 00:00:00 GMT
+              [{type,days},{from,1578441600},{to,1578528000}],       %% 1578528000 - 09 Jan 2020 00:00:00 GMT
+              [{type,hours},{from,1578528000},{to,1578531600}],      %% 1578531600 - 09 Jan 2020 01:00:00 GMT
+              [{type,minutes},{from,1578531600},{to,1578531660}],    %% 1578531660 - 09 Jan 2020 01:01:00 GMT
+              [{type,seconds},{from,1578531660},{to,1578531661}]]}]} %% 1578531661 - 09 Jan 2020 01:01:01 GMT
+
+%% the same but shorter
+
+%% 1577836800 - 01 Jan 2020 00:00:00 GMT
+%% 1578531661 - 09 Jan 2020 01:01:01 GMT
+2> e_time_slicer:slice(1577836800, 1578531661).
+{ok,[{weeks,1},
+     {days,1},
+     {hours,1},
+     {minutes,1},
+     {seconds,1},
+     {slices,[[{type,weeks},{from,1577836800},{to,1578441600}],
+              [{type,days},{from,1578441600},{to,1578528000}],
+              [{type,hours},{from,1578528000},{to,1578531600}],
+              [{type,minutes},{from,1578531600},{to,1578531660}],
+              [{type,seconds},{from,1578531660},{to,1578531661}]]}]}
+
+%% When dynamic option equals to false, slice returns only one fixed type (default is weeks)
+
+%% 1577836800 - 01 Jan 2020 00:00:00 GMT
+%% 1578531661 - 09 Jan 2020 01:01:01 GMT
+3> e_time_slicer:slice(1577836800, 1578531661, [{dynamic, false}]).
+{ok,[{type,weeks},
+     {count,1},
+     {from,1577836800},
+     {to,1578441600},
+     {remainder,90061},
+     {slices,[[{from,1577836800},{to,1578441600}]]}]}
+
+%% 1577836800 - 01 Jan 2020 00:00:00 GMT
+%% 1578531661 - 09 Jan 2020 01:01:01 GMT
+4> e_time_slicer:slice(1577836800, 1578531661, [{dynamic, false}, {scale, days}]). 
+{ok,[{type,days},
+     {count,8},
+     {from,1577836800},
+     {to,1578528000},
+     {remainder,3661},
+     {slices,[[{from,1577836800},{to,1577923200}],
+              [{from,1577923200},{to,1578009600}],
+              [{from,1578009600},{to,1578096000}],
+              [{from,1578096000},{to,1578182400}],
+              [{from,1578182400},{to,1578268800}],
+              [{from,1578268800},{to,1578355200}],
+              [{from,1578355200},{to,1578441600}],
+              [{from,1578441600},{to,1578528000}]]}]}
+
+```
+
+# Drawbacks
+- `max_scale` does not support `years` and `month`.
+In order to implement this, we need to handle leap years and other calendar features.
