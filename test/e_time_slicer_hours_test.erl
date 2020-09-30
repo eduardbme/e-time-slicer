@@ -2,6 +2,7 @@
 -compile(export_all).
 
 -include_lib("eunit/include/eunit.hrl").
+-include("include/e_time_slicer.hrl").
 
 -define(test(T), {setup, fun start/0, fun stop/1, T}).
 
@@ -20,7 +21,7 @@ all_tests_test_() ->
     {
       %% 1577836800 - 01 Jan 2020 00:00:00 GMT
       %% 1577836801 - 01 Jan 2020 00:00:01 GMT
-      input, [1577836800, 1577836801, [{scale, hours}, {dynamic, false}]],
+      input, [1577836800, 1577836801, #options{scale = hours, is_dynamic = false, is_zero_based = false}],
       expected_result, [
         {type, hours},
         {count, 0},
@@ -33,7 +34,7 @@ all_tests_test_() ->
     {
       %% 1577836800 - 01 Jan 2020 00:00:00 GMT
       %% 1577836861 - 01 Jan 2020 00:01:01 GMT
-      input, [1577836800, 1577836861, [{scale, hours}, {dynamic, false}]],
+      input, [1577836800, 1577836861, #options{scale = hours, is_dynamic = false, is_zero_based = false}],
       expected_result, [
         {type, hours},
         {count, 0},
@@ -46,7 +47,7 @@ all_tests_test_() ->
     {
       %% 1577836800 - 01 Jan 2020 00:00:00 GMT
       %% 1577840461 - 01 Jan 2020 01:01:01 GMT
-      input, [1577836800, 1577840461, [{scale, hours}, {dynamic, false}]],
+      input, [1577836800, 1577840461, #options{scale = hours, is_dynamic = false, is_zero_based = false}],
         expected_result, [
         {type, hours},
         {count, 1},
@@ -61,7 +62,7 @@ all_tests_test_() ->
     {
       %% 1577836800 - 01 Jan 2020 00:00:00 GMT
       %% 1578268800 - 06 Jan 2020 00:00:00 GMT
-      input, [1577836800, 1578268800, [{scale, hours}, {dynamic, false}]],
+      input, [1577836800, 1578268800, #options{scale = hours, is_dynamic = false, is_zero_based = false}],
       expected_result, [
         {type, hours},
         {count, 5 * 24},
@@ -195,7 +196,7 @@ all_tests_test_() ->
     {
       %% 1577836800 - 01 Jan 2020 00:00:00 GMT
       %% 1578268801 - 06 Jan 2020 00:00:01 GMT
-      input, [1577836800, 1578268801, [{scale, hours}, {dynamic, false}]],
+      input, [1577836800, 1578268801, #options{scale = hours, is_dynamic = false, is_zero_based = false}],
       expected_result, [
         {type, hours},
         {count, 5 * 24},
@@ -329,7 +330,7 @@ all_tests_test_() ->
     {
       %% 1577836800 - 01 Jan 2020 00:00:00 GMT
       %% 1578268861 - 06 Jan 2020 00:01:01 GMT
-      input, [1577836800, 1578268861, [{scale, hours}, {dynamic, false}]],
+      input, [1577836800, 1578268861, #options{scale = hours, is_dynamic = false, is_zero_based = false}],
       expected_result, [
         {type, hours},
         {count, 5 * 24},
@@ -463,7 +464,7 @@ all_tests_test_() ->
     {
       %% 1577836800 - 01 Jan 2020 00:00:00 GMT
       %% 1578272461 - 06 Jan 2020 01:01:01 GMT
-      input, [1577836800, 1578272461, [{scale, hours}, {dynamic, false}]],
+      input, [1577836800, 1578272461, #options{scale = hours, is_dynamic = false, is_zero_based = false}],
       expected_result, [
         {type, hours},
         {count, 5 * 24 + 1},

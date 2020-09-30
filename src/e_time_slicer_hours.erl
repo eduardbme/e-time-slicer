@@ -10,7 +10,7 @@ slice(From0, To0) when From0 < To0 ->
   Seconds = To0 - From0,
   AmountOfHours = Seconds div AmountOfSecondsWithinHour,
 
-  Slices = e_time_slice:slice(From0, AmountOfHours, AmountOfSecondsWithinHour),
+  Slices = e_time_slicer_utils:slice(From0, AmountOfHours, AmountOfSecondsWithinHour),
 
   {to, To} = if
     AmountOfHours > 0 -> {to, From0 + AmountOfHours * AmountOfSecondsWithinHour};
@@ -22,11 +22,11 @@ slice(From0, To0) when From0 < To0 ->
     To1 -> {remainder, To0 - To1}
   end,
 
-  {ok, [
+  [
     {type, hours},
     {count, AmountOfHours},
     {from, From0},
     {to, To},
     {remainder, Remainder},
     {slices, Slices}
-  ]}.
+  ].

@@ -2,6 +2,7 @@
 -compile(export_all).
 
 -include_lib("eunit/include/eunit.hrl").
+-include("include/e_time_slicer.hrl").
 
 -define(test(T), {setup, fun start/0, fun stop/1, T}).
 
@@ -18,9 +19,68 @@ test({input, Input, expected_result, ExpectedResult}) ->
 all_tests_test_() ->
   TestCases = [
     {
+      %% 1253968200 - 26 Sep 2009 12:30:00 GMT
+      %% 1255186800 - 10 Oct 2009 15:00:00 GMT
+      input, [1253968200, 1255186800, #options{scale = weeks, is_dynamic = true, is_zero_based = true}],
+      expected_result, [
+        {minutes,30},
+        {hours,26},
+        {days,6},
+        {weeks,1},
+        {slices, [
+          [{type,minutes},{from,1253968200},{to,1253970000}],
+          [{type,hours},{from,1253970000},{to,1254009600}],
+          [{type,days},{from,1254009600},{to,1254096000}],
+          [{type,weeks},{from,1254096000},{to,1254700800}],
+          [{type,days},{from,1254700800},{to,1255132800}],
+          [{type,hours},{from,1255132800},{to,1255186800}]
+        ]}
+      ]
+    },
+    {
+      %% 1253968200 - 26 Sep 2009 12:30:00 GMT
+      %% 1255186800 - 10 Oct 2009 15:00:00 GMT
+      input, [1253968200, 1255186800, #options{scale = days, is_dynamic = true, is_zero_based = true}],
+      expected_result, [
+        {minutes,30},
+        {hours,26},
+        {days,13},
+        {slices,[
+          [{type,minutes},{from,1253968200},{to,1253970000}],
+          [{type,hours},{from,1253970000},{to,1254009600}],
+          [{type,days},{from,1254009600},{to,1255132800}],
+          [{type,hours},{from,1255132800},{to,1255186800}]
+        ]}
+      ]
+    },
+    {
+      %% 1253968200 - 26 Sep 2009 12:30:00 GMT
+      %% 1255186800 - 10 Oct 2009 15:00:00 GMT
+      input, [1253968200, 1255186800, #options{scale = hours, is_dynamic = true, is_zero_based = true}],
+      expected_result, [
+        {minutes,30},
+        {hours,338},
+        {slices,[
+          [{type,minutes},{from,1253968200},{to,1253970000}],
+          [{type,hours},{from,1253970000},{to,1255186800}]
+        ]}
+      ]
+    },
+    {
+      %% 1253968200 - 26 Sep 2009 12:30:00 GMT
+      %% 1255186800 - 10 Oct 2009 15:00:00 GMT
+      input, [1253968200, 1255186800, #options{scale = minutes, is_dynamic = true, is_zero_based = true}],
+      expected_result, [
+        {minutes,20310},
+        {slices,[
+          [{type,minutes}, {from,1253968200}, {to,1255186800}]
+        ]}
+      ]
+    },
+    {
       %% 1577836800 - 01 Jan 2020 00:00:00 GMT
       %% 1577836801 - 01 Jan 2020 00:00:01 GMT
-      input, [1577836800, 1577836801, [{dynamic, true}, {max_scale, weeks}]],
+      input, [1577836800, 1577836801, #options{scale = weeks, is_dynamic = true, is_zero_based = false}],
       expected_result, [
         {seconds, 1},
         {slices, [
@@ -31,7 +91,7 @@ all_tests_test_() ->
     {
       %% 1577836800 - 01 Jan 2020 00:00:00 GMT
       %% 1577836861 - 01 Jan 2020 00:01:01 GMT
-      input, [1577836800, 1577836861, [{dynamic, true}, {max_scale, weeks}]],
+      input, [1577836800, 1577836861, #options{scale = weeks, is_dynamic = true, is_zero_based = false}],
       expected_result, [
         {minutes, 1},
         {seconds, 1},
@@ -44,7 +104,7 @@ all_tests_test_() ->
     {
       %% 1577836800 - 01 Jan 2020 00:00:00 GMT
       %% 1577840461 - 01 Jan 2020 01:01:01 GMT
-      input, [1577836800, 1577840461, [{dynamic, true}, {max_scale, weeks}]],
+      input, [1577836800, 1577840461, #options{scale = weeks, is_dynamic = true, is_zero_based = false}],
       expected_result, [
         {hours, 1},
         {minutes, 1},
@@ -59,7 +119,7 @@ all_tests_test_() ->
     {
       %% 1577836800 - 01 Jan 2020 00:00:00 GMT
       %% 1577926861 - 02 Jan 2020 01:01:01 GMT
-      input, [1577836800, 1577926861, [{dynamic, true}, {max_scale, weeks}]],
+      input, [1577836800, 1577926861, #options{scale = weeks, is_dynamic = true, is_zero_based = false}],
       expected_result, [
         {days, 1},
         {hours, 1},
@@ -76,7 +136,7 @@ all_tests_test_() ->
     {
       %% 1577836800 - 01 Jan 2020 00:00:00 GMT
       %% 1578531661 - 09 Jan 2020 01:01:01 GMT
-      input, [1577836800, 1578531661, [{dynamic, true}, {max_scale, weeks}]],
+      input, [1577836800, 1578531661, #options{scale = weeks, is_dynamic = true, is_zero_based = false}],
       expected_result, [
         {weeks, 1},
         {days, 1},
@@ -95,7 +155,7 @@ all_tests_test_() ->
     {
       %% 1577836800 - 01 Jan 2020 00:00:00 GMT
       %% 1578531661 - 09 Jan 2020 01:01:01 GMT
-      input, [1577836800, 1578531661, [{dynamic, true}, {max_scale, days}]],
+      input, [1577836800, 1578531661, #options{scale = days, is_dynamic = true, is_zero_based = false}],
       expected_result, [
         {days, 8},
         {hours, 1},
@@ -112,7 +172,7 @@ all_tests_test_() ->
     {
       %% 1577836800 - 01 Jan 2020 00:00:00 GMT
       %% 1578531661 - 09 Jan 2020 01:01:01 GMT
-      input, [1577836800, 1578531661, [{dynamic, true}, {max_scale, hours}]],
+      input, [1577836800, 1578531661, #options{scale = hours, is_dynamic = true, is_zero_based = false}],
       expected_result, [
         {hours, 8 * 24 + 1},
         {minutes, 1},
@@ -127,7 +187,7 @@ all_tests_test_() ->
     {
       %% 1577836800 - 01 Jan 2020 00:00:00 GMT
       %% 1578531661 - 09 Jan 2020 01:01:01 GMT
-      input, [1577836800, 1578531661, [{dynamic, true}, {max_scale, minutes}]],
+      input, [1577836800, 1578531661, #options{scale = minutes, is_dynamic = true, is_zero_based = false}],
       expected_result, [
         {minutes, 8 * 24 * 60 + 60 + 1},
         {seconds, 1},
@@ -140,7 +200,7 @@ all_tests_test_() ->
     {
       %% 1577836800 - 01 Jan 2020 00:00:00 GMT
       %% 1578531661 - 09 Jan 2020 01:01:01 GMT
-      input, [1577836800, 1578531661, [{dynamic, true}, {max_scale, seconds}]],
+      input, [1577836800, 1578531661, #options{scale = seconds, is_dynamic = true, is_zero_based = false}],
       expected_result, [
         {seconds, 8 * 24 * 60 * 60 + 60 * 60 + 60 + 1},
         {slices, [
@@ -151,7 +211,7 @@ all_tests_test_() ->
     {
       %% 1262307661 - 01 Jan 2010 01:01:01 GMT
       %% 2524611661 - 01 Jan 2050 01:01:01 GMT
-      input, [1262307661, 2524611661, [{dynamic, true}, {max_scale, weeks}]],
+      input, [1262307661, 2524611661, #options{scale = weeks, is_dynamic = true, is_zero_based = false}],
       expected_result, [
         {weeks, 2087},
         {days, 1},
@@ -164,7 +224,7 @@ all_tests_test_() ->
     {
       %% 1262307661 - 01 Jan 2010 01:01:01 GMT
       %% 2524615322 - 01 Jan 2050 02:02:02 GMT
-      input, [1262307661, 2524615322, [{dynamic, true}, {max_scale, weeks}]],
+      input, [1262307661, 2524615322, #options{scale = weeks, is_dynamic = true, is_zero_based = false}],
       expected_result, [
         {weeks, 2087},
         {days, 1},

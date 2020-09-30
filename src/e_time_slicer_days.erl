@@ -10,7 +10,7 @@ slice(From0, To0) when From0 < To0 ->
   Seconds = To0 - From0,
   AmountOfDays = Seconds div AmountOfSecondsWithinDay,
 
-  Slices = e_time_slice:slice(From0, AmountOfDays, AmountOfSecondsWithinDay),
+  Slices = e_time_slicer_utils:slice(From0, AmountOfDays, AmountOfSecondsWithinDay),
 
   {to, To} = if
     AmountOfDays > 0 -> {to, From0 + AmountOfDays * AmountOfSecondsWithinDay};
@@ -22,11 +22,11 @@ slice(From0, To0) when From0 < To0 ->
     To1 -> {remainder, To0 - To1}
   end,
 
-  {ok, [
+  [
     {type, days},
     {count, AmountOfDays},
     {from, From0},
     {to, To},
     {remainder, Remainder},
     {slices, Slices}
-  ]}.
+  ].

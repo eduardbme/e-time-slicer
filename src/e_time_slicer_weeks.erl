@@ -10,7 +10,7 @@ slice(From0, To0) when From0 < To0 ->
   Seconds = To0 - From0,
   AmountOfWeeks = Seconds div AmountOfSecondsWithinWeek,
 
-  Slices = e_time_slice:slice(From0, AmountOfWeeks, AmountOfSecondsWithinWeek),
+  Slices = e_time_slicer_utils:slice(From0, AmountOfWeeks, AmountOfSecondsWithinWeek),
 
   {to, To} = if
     AmountOfWeeks > 0 -> {to, From0 + AmountOfWeeks * AmountOfSecondsWithinWeek};
@@ -22,11 +22,11 @@ slice(From0, To0) when From0 < To0 ->
     To1 -> {remainder, To0 - To1}
   end,
 
-  {ok, [
+  [
     {type, weeks},
     {count, AmountOfWeeks},
     {from, From0},
     {to, To},
     {remainder, Remainder},
     {slices, Slices}
-  ]}.
+  ].
