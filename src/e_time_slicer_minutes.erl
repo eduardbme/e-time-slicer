@@ -5,6 +5,15 @@
   slice/2
 ]).
 
+slice(From, From) ->
+  [
+    {type, minutes},
+    {count, 0},
+    {from, From},
+    {to, From},
+    {remainder, 0},
+    {slices, []}
+  ];
 slice(From0, To0) when From0 < To0 ->
   AmountOfSecondsWithinMinute = 60,
   Seconds = To0 - From0,

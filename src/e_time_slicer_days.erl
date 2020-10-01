@@ -5,6 +5,15 @@
   slice/2
 ]).
 
+slice(From, From) ->
+  [
+    {type, days},
+    {count, 0},
+    {from, From},
+    {to, From},
+    {remainder, 0},
+    {slices, []}
+  ];
 slice(From0, To0) when From0 < To0 ->
   AmountOfSecondsWithinDay = 86400,
   Seconds = To0 - From0,

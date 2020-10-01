@@ -20,36 +20,65 @@ slice(From, To) ->
   To :: non_neg_integer(),
   Options :: #options{},
   Result :: [{_,_},...].
-slice(From, To, #options{is_zero_based = IsZeroBased} = Options) ->
-  TimeRanges = case IsZeroBased of
+slice(From, To, #options{is_zero_based = IsZeroBased, is_dynamic = IsDynamic} = Options) ->
+  TimeRanges0 = case IsZeroBased of
     true -> do_slice_zero_based(From, To, Options);
     false -> do_slice(From, To, Options)
+  end,
+
+  TimeRanges = case IsDynamic of
+    true ->
+      NormalizedTimeRange = normalize(TimeRanges0),
+
+      %% verify that amount of seconds within
+      %% `NormalizedTimeRange` is equals to `From - To`
+      e_time_slicer_verifier:verify(From, To, NormalizedTimeRange),
+
+      NormalizedTimeRange;
+    false ->
+      TimeRanges0
   end,
 
   {ok, TimeRanges}.
 
 do_slice_zero_based(From, To, Options) ->
-  TimeRanges = do_slice_zero_based(From, To, Options, []),
+  merge(do_slice_zero_based(From, To, Options, [])).
 
-  NormalizedTimeRange = normalize(TimeRanges),
+do_slice_zero_based(From, To, #options{scale = seconds} = Options, Acc) ->
+  %% base case, 'seconds' is minimal scale
 
-  %% assert that verifies that amount of seconds within
-  %% `NormalizedTimeRange` is equals to `From - To`
-  e_time_slicer_verifier:verify(From, To, NormalizedTimeRange),
-
-  NormalizedTimeRange.
-
-do_slice_zero_based(From, To, #options{scale = minutes} = Options, Acc) ->
   {ok, Slices} = slice(From, To, Options#options{is_zero_based = false}),
 
-  merge([Slices|Acc]);
+  [Slices|Acc];
 do_slice_zero_based(From, To, #options{scale = Scale} = Options, Acc) ->
   RoundedFrom = e_time_slicer_calendar:ceil(From, scale_to_calendar_term(Scale)),
 
-  {ok, Slices} = slice(RoundedFrom, To, Options#options{is_zero_based = false}),
-
-  do_slice_zero_based(From, RoundedFrom, Options#options{scale = next_scale(Scale)}, [Slices|Acc]).
-
+  case From of
+    RoundedFrom ->
+      %% if 'From' equals to 'RoundedFrom' (like 00:00:00 == 00:00:00)
+      %% do plain slice
+      %%
+      %% is_zero_based = false in order to avoid infinite recursion
+      {ok, Slices} = slice(From, To, Options#options{is_zero_based = false}),
+      [Slices|Acc];
+    _ ->
+      case To =< RoundedFrom of
+        true ->
+          %% if 'RoundedFrom' bigger than 'To' - no reason to user it
+          %% do plain slice logic using 'From' and 'To'
+          %%
+          %% is_zero_based = false in order to avoid infinite recursion
+          {ok, Slices} = slice(From, To, Options#options{is_zero_based = false}),
+          [Slices|Acc];
+        _ ->
+          %% 'RoundedFrom' is less than 'To'
+          %% so we can do 'do_slice_zero_based' logic
+          %%
+          %% is_zero_based = false in order to avoid infinite recursion
+          {ok, Slices} = slice(RoundedFrom, To, Options#options{is_zero_based = false}),
+          do_slice_zero_based(From, RoundedFrom, Options#options{scale = next_scale(Scale)}, [Slices|Acc])
+      end
+  end.
 do_slice(weeks, From, To) ->
   e_time_slicer_weeks:slice(From, To);
 do_slice(days, From, To) ->
@@ -63,15 +92,7 @@ do_slice(seconds, From, To) ->
 do_slice(From, To, #options{scale = Scale, is_dynamic = false}) ->
   do_slice(Scale, From, To);
 do_slice(From, To, #options{scale = Scale, is_dynamic = true}) ->
-  TimeRanges = do_slice_with_acc(Scale, From, To, [], []),
-
-  NormalizedTimeRange = normalize(TimeRanges),
-
-  %% assert that verifies that amount of seconds within
-  %% `NormalizedTimeRange` is equals to `From - To`
-  e_time_slicer_verifier:verify(From, To, NormalizedTimeRange),
-
-  TimeRanges.
+  do_slice_with_acc(Scale, From, To, [], []).
 
 do_slice_with_acc(undefined, _From, _To, TotalAcc0, SlicesAcc0) ->
   SlicesAcc = lists:reverse(SlicesAcc0),
@@ -151,6 +172,7 @@ merge_metric({Metric, MetricValue}, TimeRange2) ->
   end.
 
 normalize(TimeRange) ->
+  Seconds = proplists:get_value(seconds, TimeRange),
   Minutes = proplists:get_value(minutes, TimeRange),
   Hours = proplists:get_value(hours, TimeRange),
   Days = proplists:get_value(days, TimeRange),
@@ -159,6 +181,6 @@ normalize(TimeRange) ->
 
   [
     {Key, Value} || {Key, Value} <-
-    [{minutes, Minutes}, {hours, Hours}, {days, Days}, {weeks, Weeks}, {slices, Slices}],
+    [{weeks, Weeks}, {days, Days}, {hours, Hours}, {minutes, Minutes}, {seconds, Seconds}, {slices, Slices}],
     Value =/= undefined
   ].
