@@ -1,6 +1,6 @@
 # e-time-slicer
-[![Build Status](https://travis-ci.org/eduardbme/e-time-slicer.svg?branch=master)](https://travis-ci.org/eduardbme/e-time-slicer)
-[![Coverage Status](https://coveralls.io/repos/github/eduardbme/e-time-slicer/badge.svg?branch=master)](https://coveralls.io/github/eduardbme/e-time-slicer?branch=master)
+[![Build Status](https://travis-ci.org/eduardbme/e-time-slicer.svg?branch=v1.0.0)](https://travis-ci.org/eduardbme/e-time-slicer)
+[![Coverage Status](https://coveralls.io/repos/github/eduardbme/e-time-slicer/badge.svg?branch=v1.0.0)](https://coveralls.io/github/eduardbme/e-time-slicer?branch=v1.0.0)
 
 
 # Description
